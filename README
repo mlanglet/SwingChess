@@ -1,0 +1,12 @@
+This is an unfinished chess project created by Mathias Langlet during 
+a Java course at the swedish university KTH.
+
+The intention for this project was to simply learn more about java. 
+I thought it would be fun to create a game instead of making small 
+booring code snippets that books usually tell you to.
+
+A lot of functionality is not in place and I've not had time to 
+complete it and might never do.
+
+Feel free to add functionality for check, checkmate and castling.
+
