@@ -1,0 +1,120 @@
+package chess.pieces;
+
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import se.kth.mlanglet.types.Point;
+import java.awt.RenderingHints;
+import java.util.ArrayList;
+
+import chess.components.GameBoard;
+import chess.components.GameSquare;
+
+
+public class King extends Chesspiece {
+	
+	public King(Color color) {
+		super(color, Type.KING);
+		
+		if(color == Color.WHITE)
+			point = new Point(300, 0);
+		else
+			point = new Point(300, 525);
+	}
+	
+	public King(Color color, boolean test, Point p){
+		super(color, Type.KING, test);
+		
+		point = p;
+		
+		System.out.println("Test piece spawned!");
+	}
+
+	/**
+	 * See super class for description!
+	 */
+	@Override
+	public Point[] path() {
+		ArrayList<Point> validMoves = new ArrayList<Point>();	
+		GameSquare gs = null;
+		Point p = null;
+
+		for(int i = 0; i < 8; i++){
+			switch(i){
+			case 0:
+				p = new Point(point.x + 75, point.y - 75);
+				break;
+			case 1:
+				p = new Point(point.x + 75, point.y);
+				break;
+			case 2:
+				p = new Point(point.x + 75, point.y + 75);
+				break;
+			case 3:
+				p = new Point(point.x, point.y + 75);
+				break;
+			case 4:
+				p = new Point(point.x, point.y - 75);
+				break;
+			case 5:
+				p = new Point(point.x - 75, point.y - 75);
+				break;
+			case 6:
+				p = new Point(point.x - 75, point.y);
+				break;
+			case 7:
+				p = new Point(point.x - 75, point.y + 75);
+				break;
+			}
+		
+			gs = GameBoard.getGameSquare(p);
+			if(gs != null){
+				if(gs.isOccupied()){
+					if(gs.getGuest().getColor() != color){
+						validMoves.add(p);
+					}
+				}
+				else {
+					validMoves.add(p);
+				}
+			}
+		}	
+		return arrayListToNativeArray(validMoves);
+	}
+
+	/**
+	 * See super class for description!
+	 */
+	@Override
+	public void draw(Graphics g) {
+		int x1Points[] = {10, 65, 59, 55, 50, 48, 47, 47, 50, 56, 50, 46, 46, 50, 50, 48, 53, 44, 40, 35, 26, 30, 28, 27, 31, 31, 28, 21, 27, 29, 30, 29, 27, 22, 17, 10};
+		int y1Points[] = {72, 72, 67, 63, 57, 52, 47, 40, 35, 32, 31, 28, 23, 18, 14, 11,  2,  7,  2,  7,  2, 11, 14, 18, 23, 28, 31, 32, 35, 40, 47, 52, 57, 63, 67, 72};
+		
+		Graphics2D g2 = (Graphics2D) g;
+		
+		g2.setRenderingHint
+		  (RenderingHints.KEY_ANTIALIASING,
+				   RenderingHints.VALUE_ANTIALIAS_ON);
+		
+		g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		
+		// Draw shape
+		g2.setStroke(new BasicStroke(1.6F, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+		g2.setColor(color);
+		g2.fillPolygon(x1Points, y1Points, x1Points.length);
+		
+		
+		// Draw outline
+		g2.setColor(drawingProperties.getOutlineColor());
+		g2.drawPolygon(x1Points, y1Points, x1Points.length);
+		
+		// Draw inline
+		g2.setColor(drawingProperties.getInlineColor());
+		g2.drawLine(28, 8, 50, 8);
+		g2.drawLine(30, 10, 48, 10);
+		g2.drawLine(21, 32, 57, 32);
+		g2.drawLine(23, 34, 55, 34);
+		g2.drawLine(13, 70, 63, 70);
+	}
+}

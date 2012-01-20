@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/74/trunk/edu/SwingChess/src/chess/exceptions
+END
+IllegalMoveException.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/74/trunk/edu/SwingChess/src/chess/exceptions/IllegalMoveException.java
+END
+NotMovedException.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/74/trunk/edu/SwingChess/src/chess/exceptions/NotMovedException.java
+END

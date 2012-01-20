@@ -1,0 +1,312 @@
+package chess.components;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
+import se.kth.mlanglet.types.Message;
+import se.kth.mlanglet.types.Move;
+import se.kth.mlanglet.types.Point;
+
+import chess.exceptions.IllegalMoveException;
+import chess.exceptions.NotMovedException;
+import chess.interfaces.IBoard;
+import chess.interfaces.IBoardToGameBar;
+import chess.network.MessageHandler;
+import chess.pieces.*;
+
+/**
+ * Represents the a chess board container all the squares and controlling the game
+ * @author Mathias
+ *
+ */
+@SuppressWarnings("serial")
+public class Board extends JPanel implements MouseListener, IBoard {
+	
+	private static final GameSquare[] boardElements = new GameSquare[64];
+	private Chesspiece[] whitePieces = new Chesspiece[16];
+	private Chesspiece[] blackPieces = new Chesspiece[16];
+	private Chesspiece[] allPieces = new Chesspiece[32];
+	
+	private Chesspiece current  = null;			// If the user has pressed a chess piece it's stored here
+	private GameSquare currentSquare = null;	// During a move the square from which the piece was taken is stored here
+	private GameSquare currentTarget = null;	// During a move the square that the user holds the mouse over
+	
+	private MessageHandler messageHandler = null;
+	private IBoardToGameBar iBoardToGameBar = null;
+	
+	private boolean myTurn = false;
+	private Color 	myColor = null;
+	
+	public Board(MessageHandler messageHandler, IBoardToGameBar iBoardToGameBar){
+		
+		this.messageHandler = messageHandler;
+		this.iBoardToGameBar = iBoardToGameBar;
+		
+		messageHandler.addMessageListener(this);
+		
+		setPreferredSize(new Dimension(600, 600));
+		setBackground(Color.BLACK);
+		setLayout(new GridLayout(8, 8));
+		setVisible(true);
+		
+		boardSetup();
+		peiceSetup();
+	}
+
+	private void boardSetup(){
+		for(int i = 0; i < 64; i++){
+			boardElements[i] = new GameSquare(i);
+		}
+		
+		for(GameSquare p : boardElements){
+			p.addMouseListener(this);
+			this.add(p);
+		}
+	}
+	
+	public static GameSquare getGameSquare(Point point){
+		for(GameSquare gs : boardElements){
+			Point gameSquarePoint = gs.getGameSquareProperties().getPoint(); 
+			
+			if(gameSquarePoint.x == point.x && gameSquarePoint.y == point.y )
+				return gs;
+		}
+		return null;
+	}
+	
+	/**
+	 * Make a move that has been received from the server
+	 * @param move
+	 */
+	public void move(Move move){
+		currentSquare 	= Board.getGameSquare(move.getStart());
+		currentTarget 	= Board.getGameSquare(move.getTarget());
+		current 		= currentSquare.getGuest();
+		
+		Chesspiece waste = null;
+
+		/**
+		 * Empty catch blocks are OK here because we already checked
+		 * that the move is valid on other players client
+		 */
+		try {
+			waste = currentTarget.occupyGameSquare(current);
+		} catch (IllegalMoveException e) {
+		} catch (NotMovedException e) {
+		}
+		
+		if(waste != null){
+			iBoardToGameBar.putChesspieceOnGameBar(waste);
+		}
+		
+		currentSquare.freeGameSquare();
+		
+		repaint();
+		myTurn = true;
+		
+		current 		= null;
+		currentSquare	= null;
+		currentTarget 	= null;
+	}
+	
+	/**
+	 * Called in the beginning of a game to tell whose turn it is
+	 */
+	public void setPlayer(boolean turn) {
+		System.out.println("Board: Setting player color!");
+		
+		myTurn = turn;
+		
+		if(myTurn)
+			myColor = Color.WHITE;
+		else
+			myColor = Color.BLACK;
+	}
+
+	/**
+	 * Called by server when a player leaves
+	 */
+	public void gameOver() {
+		myTurn = false;
+	}
+	
+	public void mouseClicked(MouseEvent e) {
+	}
+
+	public void mousePressed(MouseEvent e) {
+		if(myTurn){
+			if(e.getSource() instanceof GameSquare){
+				GameSquare gameSquare = (GameSquare) e.getSource();
+				if(gameSquare.isOccupied()){
+					current 		= gameSquare.getGuest();
+					currentSquare 	= gameSquare;
+					currentTarget 	= gameSquare;
+				}
+			}
+		}
+	}
+
+	public void mouseReleased(MouseEvent e) {
+		if(current != null){
+			try {
+				Chesspiece waste = null;
+				waste = currentTarget.occupyGameSquare(current);
+				
+				if(waste != null){
+					iBoardToGameBar.putChesspieceOnGameBar(waste);
+				}
+				
+				currentSquare.freeGameSquare();
+				
+				myTurn = false;
+				
+				Move move = new Move(currentSquare.getGameSquareProperties().getPoint(), currentTarget.getGameSquareProperties().getPoint());
+				
+				if(!messageHandler.sendMessage(new Message(move, messageHandler.getPlayerName()))){
+					JOptionPane.showMessageDialog(this, "Connection to the server has been lost!");
+					System.exit(0);
+				}
+			} catch(IllegalMoveException ime){
+				JOptionPane.showMessageDialog(this.getParent(), ime.getMessage());
+			} catch(NotMovedException nme){
+			}
+			
+			repaint();
+			
+			current 		= null;
+			currentSquare 	= null;
+			currentTarget	= null;
+		}
+	}
+
+	public void mouseEntered(MouseEvent e) {
+		if(myTurn){
+			if(current == null){
+				if(e.getSource() instanceof GameSquare){
+					GameSquare gameSquare = (GameSquare) e.getSource();
+					Point[] path = null;
+					
+					if(gameSquare.isOccupied()){
+						Chesspiece guest = gameSquare.getGuest();
+						
+						if(guest.getColor() == myColor){
+							path = guest.path();
+							
+							if(path == null){
+								gameSquare.setBackground(Color.RED);
+							}
+							else if(path != null){
+								gameSquare.setBackground(new Color(45, 150, 45));
+								
+								for(Point point : path){
+									if(getGameSquare(point) != null)
+										getGameSquare(point).setBackground(Color.GREEN);
+								}
+							}
+						}
+						else
+							gameSquare.setBackground(Color.RED);
+					}
+					else {
+						gameSquare.setBackground(Color.LIGHT_GRAY);
+					}
+				}
+			}
+			else {
+				if(e.getSource() instanceof GameSquare){
+					GameSquare gameSquare = (GameSquare) e.getSource();
+					current.setDrawingProperties(gameSquare.getGameSquareProperties().getColor());
+					current.update(gameSquare.getGraphics());
+					currentTarget = gameSquare;
+				}
+			}	
+		}
+		else {
+			if(e.getSource() instanceof GameSquare){
+				GameSquare gameSquare = (GameSquare) e.getSource();
+				gameSquare.setBackground(Color.RED);
+			}
+		}
+	}
+
+	public void mouseExited(MouseEvent e) {
+		
+		Point[] path = null;
+		if(e.getSource() instanceof GameSquare){
+			GameSquare gameSquare = (GameSquare) e.getSource();
+			
+			if(current == null){
+				if(gameSquare.isOccupied()){
+					path = gameSquare.getGuest().path();
+					if(path != null){
+						for(Point point : path){
+							if(getGameSquare(point) != null)
+								getGameSquare(point).setBackground(getGameSquare(point).getGameSquareProperties().getColor());
+						}
+					}
+				}
+				
+				gameSquare.setBackground(gameSquare.getGameSquareProperties().getColor());
+			
+			}
+			else {
+				path = current.path();
+				if(path != null){
+					for(Point point : path){
+						if(getGameSquare(point) != null)
+							getGameSquare(point).setBackground(getGameSquare(point).getGameSquareProperties().getColor());
+					}
+				}
+				
+				currentSquare.setBackground(currentSquare.getGameSquareProperties().getColor());		
+				gameSquare.setBackground(gameSquare.getGameSquareProperties().getColor());
+				gameSquare.repaint();
+			}
+		}
+	}
+	
+	private void peiceSetup(){
+		
+		whitePieces[0] = new Rook(Color.WHITE);
+		whitePieces[1] = new Knight(Color.WHITE);
+		whitePieces[2] = new Bishop(Color.WHITE);
+		whitePieces[3] = new Queen(Color.WHITE);
+		whitePieces[4] = new King(Color.WHITE);
+		whitePieces[5] = new Bishop(Color.WHITE);
+		whitePieces[6] = new Knight(Color.WHITE);
+		whitePieces[7] = new Rook(Color.WHITE);
+		
+		for(int i = 8; i < 16; i++){
+			whitePieces[i] = new Pawn(Color.WHITE);
+		}
+	
+		blackPieces[15] = new Rook(Color.BLACK);
+		blackPieces[14] = new Knight(Color.BLACK);
+		blackPieces[13] = new Bishop(Color.BLACK);
+		blackPieces[12] = new King(Color.BLACK);
+		blackPieces[11] = new Queen(Color.BLACK);
+		blackPieces[10] = new Bishop(Color.BLACK);
+		blackPieces[9] = new Knight(Color.BLACK);
+		blackPieces[8] = new Rook(Color.BLACK);
+		     
+		
+		for(int i = 0; i < 8; i++){
+			blackPieces[i] = new Pawn(Color.BLACK);
+		}
+		
+		for(int i = 0; i < whitePieces.length; i++){
+			allPieces[i] = whitePieces[i];
+			getGameSquare(whitePieces[i].getPoint()).setGuest(whitePieces[i]);
+		}
+		
+		for(int i = 0; i < blackPieces.length; i++){
+			allPieces[i + 16] = blackPieces[i];
+			getGameSquare(blackPieces[i].getPoint()).setGuest(blackPieces[i]);
+		}
+	}
+}

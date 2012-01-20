@@ -1,0 +1,7 @@
+package chess.components;
+
+import chess.pieces.Chesspiece;
+
+public interface EatListener {
+	public void Eaten(Chesspiece piece);
+}

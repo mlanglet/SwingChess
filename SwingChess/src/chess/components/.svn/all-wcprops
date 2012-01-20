@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/83/trunk/edu/SwingChess/src/chess/components
+END
+EatListener.java
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/71/trunk/edu/SwingChess/src/chess/components/EatListener.java
+END
+IllegalMoveException.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/71/trunk/edu/SwingChess/src/chess/components/IllegalMoveException.java
+END
+GameWindow.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/!svn/ver/83/trunk/edu/SwingChess/src/chess/components/GameWindow.java
+END
+GameBoard.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/!svn/ver/80/trunk/edu/SwingChess/src/chess/components/GameBoard.java
+END
+Board.java
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/!svn/ver/72/trunk/edu/SwingChess/src/chess/components/Board.java
+END
+GameSquareProperties.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/73/trunk/edu/SwingChess/src/chess/components/GameSquareProperties.java
+END
+ChatWindow.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/!svn/ver/79/trunk/edu/SwingChess/src/chess/components/ChatWindow.java
+END
+DrawingProperties.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/71/trunk/edu/SwingChess/src/chess/components/DrawingProperties.java
+END
+GameSquare.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/!svn/ver/82/trunk/edu/SwingChess/src/chess/components/GameSquare.java
+END
+GameTimer.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/!svn/ver/71/trunk/edu/SwingChess/src/chess/components/GameTimer.java
+END
+NotMovedException.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/71/trunk/edu/SwingChess/src/chess/components/NotMovedException.java
+END
+MainWindow.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/!svn/ver/78/trunk/edu/SwingChess/src/chess/components/MainWindow.java
+END
+GameBar.java
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/81/trunk/edu/SwingChess/src/chess/components/GameBar.java
+END

@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/77/trunk/edu/SwingChess/src/chess/pieces
+END
+Bishop.java
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/85/trunk/edu/SwingChess/src/chess/pieces/Bishop.java
+END
+Knight.java
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/86/trunk/edu/SwingChess/src/chess/pieces/Knight.java
+END
+Pawn.java
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/!svn/ver/86/trunk/edu/SwingChess/src/chess/pieces/Pawn.java
+END
+King.java
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/!svn/ver/86/trunk/edu/SwingChess/src/chess/pieces/King.java
+END
+Rook.java
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/!svn/ver/86/trunk/edu/SwingChess/src/chess/pieces/Rook.java
+END
+Chesspiece.java
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/!svn/ver/76/trunk/edu/SwingChess/src/chess/pieces/Chesspiece.java
+END
+Queen.java
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/86/trunk/edu/SwingChess/src/chess/pieces/Queen.java
+END

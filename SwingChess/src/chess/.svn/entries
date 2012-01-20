@@ -1,0 +1,46 @@
+10
+
+dir
+79
+http://archive.seaview.se/svn/trunk/edu/SwingChess/src/chess
+http://archive.seaview.se/svn
+
+
+
+2011-10-14T07:56:06.358651Z
+79
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+e4889a9c-5fcc-41dc-b20d-7bf1b7bf5dcb
+
+exceptions
+dir
+
+interfaces
+dir
+
+main
+dir
+
+components
+dir
+
+pieces
+dir
+
+network
+dir
+
